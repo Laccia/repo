@@ -8,7 +8,6 @@ import (
 	"os/signal"
 	"repo/cmd/base"
 	"repo/cmd/delivery"
-
 	"repo/cmd/jwt"
 
 	"syscall"
@@ -39,17 +38,16 @@ func App() {
 	server.Logger.SetLevel(log.DEBUG)
 	//Установка обработки ендпоинтов
 	server.POST("/new_user", delivery.NewUser) //Создание пользователя
-	server.POST("/login", nil)                 //Вход пользователя
-	//Эндпоинты для обычного пользователя
-	userGroup := server.Group("/shop")
-	userGroup.GET("/list", delivery.List) //Вывод всех товаров
-	userGroup.GET("/serach/:name", nil)   //Вывод с фильтром по ключевому значению
-	//Эндпоинты для администратора
-	adminGroup := server.Group("/admin")
-	adminGroup.Use(nil) //Установка проверки токена подключения
+	server.POST("/login", jwtBase.Login)       //Вход пользователя
 
+	//Ендпоинты для обычного пользователя
 	tokenGroup := server.Group("/token")
-	tokenGroup.Use(nil)                                              //Установка проверки токена подключения
+	tokenGroup.Use(jwt.JWTAutoMiddleware()) //Установка проверки токена подключения
+	userGroup := tokenGroup.Group("/shop")
+	userGroup.GET("/list", delivery.List) //Вывод всех товаров
+	//Эндпоинты для администратора
+	adminGroup := tokenGroup.Group("/admin")
+
 	adminGroup.POST("/create", delivery.NewItems)                    //Создание товара
 	adminGroup.DELETE("/delete/:id", delivery.DeleteItems)           //Удаление товара по ID
 	adminGroup.GET("/metrics", echo.WrapHandler(promhttp.Handler())) //Метрики сервера
