@@ -41,7 +41,7 @@ func App() {
 
 	//Ендпоинты для обычного пользователя
 	tokenGroup := server.Group("/token")
-	tokenGroup.Use(jwt.JWTAutoMiddleware()) //Установка проверки токена подключения
+	tokenGroup.Use(jwt.JWTAutoMiddleware(key)) //Установка проверки токена подключения
 	userGroup := tokenGroup.Group("/shop")
 	userGroup.GET("/list", delivery.List) //Вывод всех товаров
 	//Эндпоинты для администратора
