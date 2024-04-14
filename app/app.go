@@ -35,13 +35,15 @@ func App() {
 	//Установка обработки ендпоинтов
 	server.POST("/new_user", nil) //Создание пользователя
 	server.POST("/login", nil)    //Вход пользователя
+
 	//Ендпоинты для обычного пользователя
-	userGroup := server.Group("/shop")
+	tokenGroup := server.Group("/token")
+	tokenGroup.Use(nil) //Установка проверки токена подключения
+	userGroup := tokenGroup.Group("/shop")
 	userGroup.GET("/list", nil)         //Вывод всех товаров
 	userGroup.GET("/serach/:name", nil) //Вывод с фильтром по ключевому значению
 	//Эндпоинты для администратора
-	adminGroup := server.Group("/admin")
-	adminGroup.Use(nil) //Установка проверки токена подключения
+	adminGroup := tokenGroup.Group("/admin")
 
 	adminGroup.POST("/create", nil)                                  //Создание товара
 	adminGroup.DELETE("/delete/:id", nil)                            //Удаление товара по ID
