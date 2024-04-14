@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"repo/cmd/jwt"
 	"syscall"
 	"time"
 
@@ -22,8 +23,8 @@ func App() {
 	log.Info(key)
 	// base := memory.NewBase()
 	// delivery := delivery.New(*base)
-	// jwtBase := jwt.New(*base, key)
-	//jwt.JWTAutoMiddleware(key)
+	jwtBase := jwt.New(*base, key)
+	jwt.JWTAutoMiddleware(key)
 	//Инициализация объекта сервера
 	server := echo.New()
 	//Установка функций логирования, перехвата ошибок и меткир
@@ -34,7 +35,7 @@ func App() {
 	server.Logger.SetLevel(log.DEBUG)
 	//Установка обработки ендпоинтов
 	server.POST("/new_user", nil) //Создание пользователя
-	server.POST("/login", nil)    //Вход пользователя
+	server.POST("/login")         //Вход пользователя
 	//Ендпоинты для обычного пользователя
 	userGroup := server.Group("/shop")
 	userGroup.GET("/list", nil)         //Вывод всех товаров
