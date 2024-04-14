@@ -1,8 +1,6 @@
 package main
 
-import (
-	app "repo/app"
-)
+import "repo/app"
 
 func main() {
 	app.App()

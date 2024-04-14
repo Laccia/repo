@@ -9,7 +9,7 @@ type Users struct {
 }
 
 type Items struct {
-	Id    uint
+	Id    int
 	Name  string  `json:"name"`
 	Price float64 `Json:"price"`
 }
@@ -32,5 +32,5 @@ type CreateItem struct {
 }
 
 type DeleteItem struct {
-	Id uint
+	Id int
 }

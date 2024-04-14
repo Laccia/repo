@@ -20,7 +20,7 @@ func New() *ItemsBase {
 	return &tmp
 }
 
-func (m *ItemsBase) CreateItem(create *models.CreateItem) error {
+func (m *ItemsBase) CreateItem(create models.CreateItem) error {
 	m.Items = append(m.Items, models.Items{
 		Id:    m.Items[len(m.Items)-1].Id + 1,
 		Name:  create.Name,
@@ -29,7 +29,7 @@ func (m *ItemsBase) CreateItem(create *models.CreateItem) error {
 	return nil
 }
 
-func (d *ItemsBase) DeleteItem(delete *models.DeleteItem) error {
+func (d *ItemsBase) DeleteItem(delete models.DeleteItem) error {
 	for i, tmp := range d.Items {
 		if tmp.Id == delete.Id {
 			d.Items = append(d.Items[:i], d.Items[i+1:]...)
@@ -37,4 +37,8 @@ func (d *ItemsBase) DeleteItem(delete *models.DeleteItem) error {
 		}
 	}
 	return errors.New("no found")
+}
+
+func (d *ItemsBase) List() []models.Items {
+	return d.Items
 }

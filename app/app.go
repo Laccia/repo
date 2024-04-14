@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"repo/cmd/base"
+	"repo/cmd/delivery"
 	"syscall"
 	"time"
 
@@ -20,8 +22,8 @@ import (
 func App() {
 	key := os.Getenv("KEYJWT")
 	log.Info(key)
-	// base := memory.NewBase()
-	// delivery := delivery.New(*base)
+	base := base.New()
+	delivery := delivery.New(*base)
 	// jwtBase := jwt.New(*base, key)
 	//jwt.JWTAutoMiddleware(key)
 	//Инициализация объекта сервера
@@ -33,20 +35,19 @@ func App() {
 	//Установка уровня логирования
 	server.Logger.SetLevel(log.DEBUG)
 	//Установка обработки ендпоинтов
-	server.POST("/new_user", nil) //Создание пользователя
-	server.POST("/login", nil)    //Вход пользователя
+	server.POST("/new_user", delivery.NewUser) //Создание пользователя
+	server.POST("/login", nil)                 //Вход пользователя
 
 	//Ендпоинты для обычного пользователя
 	tokenGroup := server.Group("/token")
 	tokenGroup.Use(nil) //Установка проверки токена подключения
 	userGroup := tokenGroup.Group("/shop")
-	userGroup.GET("/list", nil)         //Вывод всех товаров
-	userGroup.GET("/serach/:name", nil) //Вывод с фильтром по ключевому значению
+	userGroup.GET("/list", delivery.List) //Вывод всех товаров
 	//Эндпоинты для администратора
 	adminGroup := tokenGroup.Group("/admin")
 
-	adminGroup.POST("/create", nil)                                  //Создание товара
-	adminGroup.DELETE("/delete/:id", nil)                            //Удаление товара по ID
+	adminGroup.POST("/create", delivery.NewItems)                    //Создание товара
+	adminGroup.DELETE("/delete/:id", delivery.DeleteItems)           //Удаление товара по ID
 	adminGroup.GET("/metrics", echo.WrapHandler(promhttp.Handler())) //Метрики сервера
 
 	Init(server)

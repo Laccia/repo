@@ -48,7 +48,7 @@ func (g *UsersBase) ValidateRule(Account string) bool {
 	return false
 }
 
-func (m *UsersBase) CreateUser(create *models.CreateUser) error {
+func (m *UsersBase) CreateUser(create models.CreateUser) error {
 	m.Users = append(m.Users, models.Users{
 		Account: create.Account,
 		Name:    create.Name,
