@@ -25,7 +25,7 @@ func App() {
 	log.Info(key)
 	base := base.New()
 	delivery := delivery.New(*base)
-	jwtBase := jwt.New(*&base.UsersBase, key)
+	jwtBase := jwt.New(base.UsersBase, key)
 	jwt.JWTAutoMiddleware(key)
 	//Инициализация объекта сервера
 	server := echo.New()
