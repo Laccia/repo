@@ -15,9 +15,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
-
-	echoPrometheus "github.com/globocom/echo-prometheus"
 )
 
 func App() {
@@ -30,7 +27,6 @@ func App() {
 	//Инициализация объекта сервера
 	server := echo.New()
 	//Установка функций логирования, перехвата ошибок и меткир
-	server.Use(echoPrometheus.MetricsMiddleware())
 	server.Use(middleware.Recover())
 	server.Use(middleware.Logger())
 	//Установка уровня логирования
@@ -47,9 +43,8 @@ func App() {
 	//Эндпоинты для администратора
 	adminGroup := tokenGroup.Group("/admin")
 
-	adminGroup.POST("/create", delivery.NewItems)                    //Создание товара
-	adminGroup.DELETE("/delete/:id", delivery.DeleteItems)           //Удаление товара по ID
-	adminGroup.GET("/metrics", echo.WrapHandler(promhttp.Handler())) //Метрики сервера
+	adminGroup.POST("/create", delivery.NewItems)          //Создание товара
+	adminGroup.DELETE("/delete/:id", delivery.DeleteItems) //Удаление товара по ID
 
 	Init(server)
 
