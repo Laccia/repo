@@ -20,7 +20,7 @@ import (
 func App() {
 	key := os.Getenv("KEYJWT")
 	log.Info(key)
-	base := base.New()
+	base := base.New(context.Background())
 	delivery := delivery.New(*base)
 	jwtBase := jwt.New(base.UsersBase, key)
 	jwt.JWTAutoMiddleware(key)

@@ -1,7 +1,6 @@
 package delivery
 
 import (
-	"log"
 	"net/http"
 	"repo/cmd/base"
 	"repo/cmd/models"
@@ -18,14 +17,12 @@ func (d *Delivery) NewUser(ctx echo.Context) error {
 	user := &models.CreateUser{}
 	err := ctx.Bind(user)
 	if err != nil {
-		log.Println("Error tut")
 		return ctx.JSON(http.StatusBadRequest, "Были переданы не коректные параметры")
 	}
 	if user.Account == "" || user.Email == "" || user.Name == "" || user.Pass == "" {
-		log.Println("Error tut")
 		return ctx.JSON(http.StatusBadRequest, "Были переданы не коректные параметры")
 	}
-	return ctx.JSON(http.StatusOK, d.base.UsersBase.CreateUser(*user))
+	return ctx.JSON(http.StatusOK, d.base.Postgres.NewUser(ctx.Request().Context(), *user))
 }
 
 func (d *Delivery) List(ctx echo.Context) error {
