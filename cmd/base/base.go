@@ -56,3 +56,11 @@ func (p *Postgres) NewUser(ctx context.Context, user models.CreateUser) error {
 	fmt.Println(err)
 	return err
 }
+
+func (p *Postgres) NewItem(ctx context.Context, item models.CreateItem) error {
+	query := "INSERT INTO items(name, price) VALUES ($1, $2)"
+	tag, err := p.db.Exec(ctx, query, item.Name, item.Price)
+	fmt.Println(tag)
+	fmt.Println(err)
+	return err
+}

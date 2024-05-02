@@ -30,7 +30,7 @@ func (d *Delivery) List(ctx echo.Context) error {
 }
 
 func (d *Delivery) NewItems(ctx echo.Context) error {
-	item := models.CreateItem{}
+	item := &models.CreateItem{}
 	err := ctx.Bind(item)
 	if err != nil {
 		return ctx.JSON(http.StatusBadRequest, "Были переданы не коректные параметры")
@@ -38,7 +38,7 @@ func (d *Delivery) NewItems(ctx echo.Context) error {
 	if item.Name == "" || item.Price == 0 {
 		return ctx.JSON(http.StatusBadRequest, "Были переданы не коректные параметры")
 	}
-	return ctx.JSON(http.StatusOK, d.base.ItemsBase.CreateItem(item))
+	return ctx.JSON(http.StatusOK, d.base.Postgres.NewItem(ctx.Request().Context(), *item))
 }
 
 func (d *Delivery) DeleteItems(ctx echo.Context) error {
